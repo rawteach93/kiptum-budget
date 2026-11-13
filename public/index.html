@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Kiptum Household Budget</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#070A12">
+<link rel="manifest" href="/manifest.json">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Our Budget">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/styles.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js" defer></script>
+<script>
+  try { var t = localStorage.getItem('kb_theme'); if (t) document.documentElement.setAttribute('data-theme', t); } catch (e) {}
+</script>
+</head>
+<body>
+  <!-- ambient aurora backdrop -->
+  <div class="aurora" aria-hidden="true"><i class="a1"></i><i class="a2"></i><i class="a3"></i><i class="a4"></i></div>
+  <div class="grain" aria-hidden="true"></div>
+
+  <!-- ================= LOCK SCREEN ================= -->
+  <div id="lock" class="lock">
+    <div class="lock-card glass">
+      <div class="brand-mark big"><span>K</span></div>
+      <h1 class="lock-title">Our Budget</h1>
+      <p class="lock-sub">The Kiptum household — private &amp; synced</p>
+      <form id="lock-form" autocomplete="off">
+        <div class="pin-wrap">
+          <input id="pin" type="password" inputmode="numeric" autocomplete="current-password" placeholder="Passcode" aria-label="Passcode" required>
+        </div>
+        <button class="btn primary wide" type="submit" id="unlock-btn">Unlock</button>
+        <p class="lock-err" id="lock-err" role="alert"></p>
+      </form>
+    </div>
+  </div>
+
+  <!-- ================= APP ================= -->
+  <div id="app" class="app" hidden>
+    <!-- Sidebar (desktop) -->
+    <aside class="sidebar glass">
+      <div class="side-brand">
+        <div class="brand-mark"><span>K</span></div>
+        <div><div class="side-title">Our Budget</div><div class="side-sub">Kiptum household</div></div>
+      </div>
+      <button class="btn primary wide add-trigger"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>New entry</button>
+      <nav class="side-nav" id="side-nav"></nav>
+      <div class="side-foot">
+        <div class="sync-pill" id="sync-pill-side"><span class="dot"></span><span class="txt">Synced</span></div>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div>
+          <div class="hello" id="hello">Habari</div>
+          <h2 class="page-title" id="page-title">Overview</h2>
+        </div>
+        <div class="top-actions">
+          <div class="sync-pill mobile-only" id="sync-pill"><span class="dot"></span><span class="txt">Synced</span></div>
+          <button class="icon-btn glass" id="theme-btn" aria-label="Switch light/dark"><svg viewBox="0 0 24 24" id="theme-ic"></svg></button>
+          <button class="icon-btn glass" data-go="settings" aria-label="Settings"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1.08-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1.08 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button>
+        </div>
+      </header>
+
+      <!-- ===== HOME ===== -->
+      <section class="view" id="view-home">
+        <div class="month-switch">
+          <button class="icon-btn glass sm" id="m-prev" aria-label="Previous month"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg></button>
+          <div class="month-lbl" id="m-label">—</div>
+          <button class="icon-btn glass sm" id="m-next" aria-label="Next month"><svg viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg></button>
+        </div>
+
+        <div class="grid home-grid">
+          <div class="hero glass gloss span-2">
+            <div class="hero-top">
+              <div>
+                <div class="eyebrow">Net this month</div>
+                <div class="hero-num" id="h-net">KSh 0</div>
+              </div>
+              <div class="hero-badge" id="h-badge">—</div>
+            </div>
+            <div class="spend-bar"><div class="spend-fill" id="h-fill"></div></div>
+            <div class="spend-note" id="h-spendnote">—</div>
+            <div class="hero-split">
+              <div class="split-item">
+                <span class="split-ic inc"><svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H8M17 7v9"/></svg></span>
+                <div><div class="k">Income</div><div class="v" id="h-inc">KSh 0</div></div>
+              </div>
+              <div class="split-item">
+                <span class="split-ic exp"><svg viewBox="0 0 24 24"><path d="M17 7L7 17M7 17h9M7 17V8"/></svg></span>
+                <div><div class="k">Expenses</div><div class="v" id="h-exp">KSh 0</div></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="stats span-2" id="h-stats"></div>
+
+          <div class="card glass" id="h-upnext-card">
+            <div class="card-head"><h3>Up next</h3><button class="link" data-go="bills">All bills</button></div>
+            <div id="h-upnext"></div>
+          </div>
+
+          <div class="card glass">
+            <div class="card-head"><h3>Recent</h3><button class="link" data-go="activity">See all</button></div>
+            <div id="h-recent"></div>
+          </div>
+
+          <div class="card glass">
+            <div class="card-head"><h3>Where money went</h3></div>
+            <div class="donut-wrap"><canvas id="c-exp"></canvas><div class="donut-center" id="c-exp-center"></div></div>
+            <div class="legend" id="l-exp"></div>
+          </div>
+
+          <div class="card glass">
+            <div class="card-head"><h3>Where money came from</h3></div>
+            <div class="donut-wrap"><canvas id="c-inc"></canvas><div class="donut-center" id="c-inc-center"></div></div>
+            <div class="legend" id="l-inc"></div>
+          </div>
+
+          <div class="card glass span-2">
+            <div class="card-head"><h3>Six-month trend</h3></div>
+            <div class="chart-wrap"><canvas id="c-trend"></canvas></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== ACTIVITY ===== -->
+      <section class="view" id="view-activity">
+        <div class="toolbar">
+          <div class="search glass">
+            <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+            <input id="a-search" type="search" placeholder="Search notes, categories, amounts…">
+          </div>
+          <div class="seg glass" id="a-kind">
+            <button class="on" data-k="all">All</button><button data-k="expense">Expenses</button><button data-k="income">Income</button>
+          </div>
+          <select class="glass select" id="a-month"></select>
+        </div>
+        <div class="totals-row" id="a-totals"></div>
+        <div id="a-list"></div>
+      </section>
+
+      <!-- ===== BILLS ===== -->
+      <section class="view" id="view-bills">
+        <div class="grid">
+          <div class="hero glass gloss alt">
+            <div class="eyebrow">Predicted spend this month</div>
+            <div class="hero-num" id="b-forecast">—</div>
+            <div class="spend-note" id="b-forecast-note"></div>
+          </div>
+          <div class="card glass">
+            <div class="card-head"><h3>Money available for bills</h3></div>
+            <div class="field money-field">
+              <span class="pre">KSh</span>
+              <input type="number" inputmode="decimal" id="b-avail" placeholder="0" min="0">
+            </div>
+            <div class="avail-summary" id="b-avail-sum"></div>
+          </div>
+          <div class="span-2" id="b-tips"></div>
+          <div class="card glass span-2">
+            <div class="card-head"><h3>Fixed bills</h3><button class="btn ghost sm" id="b-add"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Track a bill</button></div>
+            <div id="b-list"></div>
+          </div>
+          <div class="card glass span-2">
+            <div class="card-head"><h3>Pay-as-you-go</h3><span class="muted sm-txt">Tokens, water, gas…</span></div>
+            <div id="b-var"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== LOANS ===== -->
+      <section class="view" id="view-loans">
+        <div class="grid">
+          <div class="hero glass gloss alt2 span-2">
+            <div class="hero-top">
+              <div><div class="eyebrow">Still owed across all balances</div><div class="hero-num" id="l-owed">KSh 0</div></div>
+              <button class="btn primary sm" id="l-add"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Add</button>
+            </div>
+            <div class="spend-bar"><div class="spend-fill good" id="l-fill"></div></div>
+            <div class="spend-note" id="l-note"></div>
+          </div>
+          <div class="span-2 loans-list" id="l-list"></div>
+        </div>
+      </section>
+
+      <!-- ===== SETTINGS ===== -->
+      <section class="view" id="view-settings">
+        <div class="grid">
+          <div class="card glass">
+            <div class="card-head"><h3>Who's using this phone?</h3></div>
+            <p class="muted">Entries you add are tagged with this name, and you'll get a ping when the other person logs something.</p>
+            <div class="seg glass wrap" id="s-who"></div>
+            <div class="row gap mt"><input class="input" id="s-who-other" placeholder="Someone else"><button class="btn ghost" id="s-who-save">Set</button></div>
+          </div>
+          <div class="card glass">
+            <div class="card-head"><h3>Appearance &amp; alerts</h3></div>
+            <div class="setting-row"><div><b>Theme</b><div class="muted sm-txt">Dark glass or light glass</div></div><div class="seg glass" id="s-theme"><button data-t="dark">Dark</button><button data-t="light">Light</button></div></div>
+            <div class="setting-row"><div><b>Notifications</b><div class="muted sm-txt" id="s-notif-state">Bills due soon &amp; partner entries</div></div><button class="btn ghost sm" id="s-notif">Turn on</button></div>
+          </div>
+          <div class="card glass">
+            <div class="card-head"><h3>Backups</h3></div>
+            <p class="muted">A copy of everything is saved automatically every night (last 60 days kept).</p>
+            <div class="row gap wrap mt">
+              <button class="btn ghost" id="s-backup-now">Back up now</button>
+              <button class="btn ghost" id="s-export">Download JSON</button>
+              <button class="btn ghost" id="s-export-csv">Download CSV</button>
+            </div>
+            <div id="s-backups" class="backups mt"></div>
+          </div>
+          <div class="card glass">
+            <div class="card-head"><h3>Import old data</h3></div>
+            <p class="muted">Bring in a JSON backup, or the CSV files exported from the old Supabase tables (transactions, bills, balances, categories). Existing entries are kept; matching IDs are updated.</p>
+            <label class="drop glass" id="s-drop">
+              <input type="file" id="s-import" accept=".json,.csv,application/json,text/csv" multiple hidden>
+              <svg viewBox="0 0 24 24"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg>
+              <span>Choose files to import</span>
+            </label>
+            <div id="s-import-msg" class="muted sm-txt mt"></div>
+          </div>
+          <div class="card glass span-2">
+            <div class="card-head"><h3>Categories</h3><button class="btn ghost sm" id="s-cat-add"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>New</button></div>
+            <div class="cat-manage" id="s-cats"></div>
+          </div>
+          <div class="card glass span-2 row between">
+            <div><b>Lock this device</b><div class="muted sm-txt">You'll need the passcode again.</div></div>
+            <button class="btn danger" id="s-lock">Lock</button>
+          </div>
+        </div>
+      </section>
+      <div class="bottom-space"></div>
+    </main>
+
+    <!-- Mobile dock -->
+    <nav class="dock glass" id="dock"></nav>
+  </div>
+
+  <!-- ================= SHEET (modal) ================= -->
+  <div class="scrim" id="scrim"></div>
+  <div class="sheet glass" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sheet-title">
+    <div class="grabber"></div>
+    <div class="sheet-head">
+      <h3 id="sheet-title">New entry</h3>
+      <button class="icon-btn glass sm" id="sheet-close" aria-label="Close"><svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
+    </div>
+    <div class="sheet-body" id="sheet-body"></div>
+  </div>
+
+  <div class="toast" id="toast" role="status"></div>
+
+  <script src="/app.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,11 @@
+{
+  "name": "kiptum-budget",
+  "version": "2.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Kiptum household budget — private, synced, glassy.",
+  "engines": { "node": "22.x" },
+  "dependencies": {
+    "@vercel/blob": "^2.9.0"
+  }
+}
